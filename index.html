@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+	<title>Ejercicio Vue4 Jesus Perez Montes</title>
+</head>
+<body>
+	<div class="container">
+	    <h1>Configurador de carros</h1>
+	    <ul class="list-group">
+	        <chariot v-for="chariot in chariots" :chariot="chariot" :selected.sync="selected"></chariot>
+	    </ul>
+	    <!--<pre>{{ $data | json }}</pre>-->
+	</div>
+	<template id="chariot-template">
+	    <li class="list-group-item">
+	        <h4>¡El carro "{{ chariot.name }}" tiene {{ chariot.amount }} caballo(s)!</h4>
+	        <button @click="pickChariot(chariot)" class="btn btn-success" :disabled="pickedChariot">
+	            {{ action }}
+	        </button>
+	    </li>
+	</template>
+</body>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js"></script>
+<script type="text/javascript">
+    Vue.component('chariot', {
+        props: ['chariot', 'selected'],
+        template: "#chariot-template",
+        methods: {
+            pickChariot: function (chariot) {
+                this.selected = chariot;
+            },
+        },
+        computed: {
+            morePowerful: function () {
+                return this.selected.amount < this.chariot.amount
+            },
+            pickedChariot: function () {
+                return this.selected.name == this.chariot.name
+            },
+            noPick: function () {
+                return this.selected.name == null;
+            },
+            action: function () {
+                if (this.noPick) {
+                    action = "Escoja un carro"
+                } else if (this.pickedChariot) {
+                    action = 'Carro escogido'
+                } else if (this.morePowerful) {
+                    action = 'Añadir caballos'
+                } else {
+                    action = 'Extraer caballos'
+                }
+                return action;
+            }
+        }
+    });
+    var vm = new Vue({
+        el: 'body',
+        data: {
+            chariots: [
+                {name: "Olympus", amount: 4},
+                {name: "Sagitta", amount: 3},
+                {name: "Icarus", amount: 2},
+                {name: "Abraxas", amount: 1},
+            ],
+            selected: {}
+        },
+    })
+</script>
+</html>
